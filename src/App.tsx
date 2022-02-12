@@ -16,6 +16,12 @@ function App(): JSX.Element {
     setPosts([...posts, newPost]);
   };
 
+  const removePost = (id: number): void => {
+    const filteredPosts = posts.filter((item) => item.id !== id);
+
+    setPosts(filteredPosts);
+  };
+
   return (
     <div className="App">
       <h1 style={{ textAlign: 'center', marginTop: 0 }}>Список постов</h1>
@@ -30,6 +36,7 @@ function App(): JSX.Element {
             key={item.id}
             post={item}
             className={className}
+            remove={removePost}
             as="li"
           />
         )}
