@@ -1,9 +1,9 @@
-.post-list {
+.list {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.post-list__item + .post-list__item {
+.list__item + .list__item {
   margin-top: 30px;
 }

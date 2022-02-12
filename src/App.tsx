@@ -1,7 +1,8 @@
 import { useState } from 'react';
 
 import './App.css';
-import { PostList } from './components/PostList/PostList';
+import { List } from './components/List/List';
+import { Post } from './components/Post/Post';
 import { IPost } from './interfaces/post.interface';
 
 function App(): JSX.Element {
@@ -15,7 +16,17 @@ function App(): JSX.Element {
   return (
     <div className="App">
       <h1 style={{ textAlign: 'center' }}>Список постов</h1>
-      <PostList posts={posts} />
+      <List
+        items={posts}
+        renderItem={(item: IPost) => (
+          <Post
+            key={item.id}
+            post={item}
+            className="list__item"
+            as="li"
+          />
+        )}
+      />
     </div>
   );
 }
