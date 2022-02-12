@@ -1,24 +1,21 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useState } from 'react';
 
-function App() {
+import './App.css';
+import { PostList } from './components/PostList/PostList';
+import { IPost } from './interfaces/post.interface';
+
+function App(): JSX.Element {
+  const [posts, setPosts] = useState<IPost[]>([
+    { id: 1, title: 'title', description: 'description', },
+    { id: 2, title: 'title', description: 'description', },
+    { id: 3, title: 'title', description: 'description', },
+    { id: 4, title: 'title', description: 'description', },
+  ]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1 style={{ textAlign: 'center' }}>Список постов</h1>
+      <PostList posts={posts} />
     </div>
   );
 }
