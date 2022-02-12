@@ -5,20 +5,21 @@ import './Post.css'
 
 type PostOwnProps<T extends ElementType> = {
   post: IPost;
-  as?: T
+  ndx?: number;
+  as?: T;
 }
 
 type PostProps<T extends ElementType> = PostOwnProps<T>
   & Omit<ComponentProps<T>, keyof PostOwnProps<T>>;
 
-export function Post<T extends ElementType = 'div'>({ post, as, className, ...props }: PostProps<T>): JSX.Element {
+export function Post<T extends ElementType = 'div'>({ post, as, className, ndx, ...props }: PostProps<T>): JSX.Element {
 
   const Component = as || 'div';
 
   return (
     <Component className={cn(className, 'post')} {...props}>
       <div>
-        <h2 className="post__title">{`${post.id}. ${post.title}`}</h2>
+        <h2 className="post__title">{`${ndx}. ${post.title}`}</h2>
         <p>{post.description}</p>
       </div>
       <div>

@@ -1,0 +1,12 @@
+.btn {
+  padding: 5px 15px;
+  border: none;
+  border-radius: 3px;
+  font-size: 14px;
+  color: #fff;
+  background-color: #0d6efd;
+  transition: background-color .15s;
+  cursor: pointer;
+
+  &:hover { background-color: darken(#0d6efd, 5%)}
+}
