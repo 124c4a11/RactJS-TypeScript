@@ -1,8 +1,9 @@
 import cn from 'classnames';
 import { ComponentProps, ElementType } from 'react';
-import { IPost } from '../../interfaces/post.interface';
-import { Button } from '../Button/Button';
+
 import './Post.css'
+import { IPost } from '../../interfaces/post.interface';
+import { Button } from '..';
 
 type PostOwnProps<T extends ElementType> = {
   post: IPost;

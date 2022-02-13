@@ -1,23 +1,25 @@
 import { DetailedHTMLProps, FormHTMLAttributes, MouseEvent, useState } from "react";
+
 import { IPost } from "../../interfaces/post.interface";
-import { Button } from "../Button/Button";
-import { Input } from "../Input/Input";
+import { Input, Button } from "..";
+
 
 export interface IPostFormProps extends DetailedHTMLProps<FormHTMLAttributes<HTMLFormElement>, HTMLFormElement> {
   create: (newPost: IPost) => void;
 }
+
 
 interface IPostState {
   title: string;
   description: string;
 }
 
+
 export function PostForm({ create, ...props }: IPostFormProps): JSX.Element {
   const [post, setPost] = useState<IPostState>({
     title: '',
     description: '',
   });
-
 
   const addNewPost = (e: MouseEvent<HTMLButtonElement>): void => {
     e.preventDefault();
@@ -30,7 +32,6 @@ export function PostForm({ create, ...props }: IPostFormProps): JSX.Element {
 
     setPost({ title: '', description: '' });
   };
-
 
   return (
     <form {...props}>

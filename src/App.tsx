@@ -1,16 +1,26 @@
 import { useState } from 'react';
 
 import './App.css';
-import { List } from './components/List/List';
-import { Post } from './components/Post/Post';
-import { PostForm } from './components/PostForm/PostForm';
+import {
+  PostForm,
+  Select,
+  List,
+  Post
+} from './components';
+
 import { IPost } from './interfaces/post.interface';
+
+
+type SortOptionType = 'title' | 'description'
+
 
 function App(): JSX.Element {
   const [posts, setPosts] = useState<IPost[]>([
-    { id: 1, title: 'title', description: 'description', },
-    { id: 2, title: 'title', description: 'description', },
+    { id: 1, title: 'bbb', description: 'aaa', },
+    { id: 2, title: 'aaa', description: 'bbb', },
   ]);
+
+  const [sortOption, setSortOption] = useState<SortOptionType | ''>('');
 
   const createPost = (newPost: IPost): void => {
     setPosts([...posts, newPost]);
@@ -22,10 +32,29 @@ function App(): JSX.Element {
     setPosts(filteredPosts);
   };
 
+  const sortPosts = (sortOption: SortOptionType): void => {
+    setSortOption(sortOption);
+
+    setPosts([...posts].sort((a, b) => a[sortOption].localeCompare(b[sortOption])));
+  }
+
   return (
     <div className="App">
-      <h1 style={{ textAlign: 'center', marginTop: 0 }}>Список постов</h1>
+      <h1 style={{ textAlign: 'center', marginTop: 0 }}>Post List</h1>
       <PostForm create={createPost} />
+
+      <hr style={{ margin: '15px 0' }} />
+
+      <Select<SortOptionType>
+        value={sortOption}
+        defaultOption="Sort"
+        options={[
+          { value: 'title', body: "By title" },
+          { value: 'description', body: 'By description' }
+        ]}
+        onChangeOption={sortPosts}
+      />
+
       <hr style={{ margin: '15px 0' }} />
 
       {
@@ -44,7 +73,7 @@ function App(): JSX.Element {
             )}
           />
           :
-          <h2 style={{ textAlign: 'center' }}>Список пуст</h2>
+          <h2 style={{ textAlign: 'center' }}>Post List is empty</h2>
       }
     </div>
   );
