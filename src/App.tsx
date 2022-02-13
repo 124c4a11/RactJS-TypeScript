@@ -25,22 +25,27 @@ function App(): JSX.Element {
   return (
     <div className="App">
       <h1 style={{ textAlign: 'center', marginTop: 0 }}>Список постов</h1>
-
       <PostForm create={createPost} />
+      <hr style={{ margin: '15px 0' }} />
 
-      <List
-        items={posts}
-        renderItem={(item: IPost, ndx, className) => (
-          <Post
-            ndx={ndx}
-            key={item.id}
-            post={item}
-            className={className}
-            remove={removePost}
-            as="li"
+      {
+        posts.length ?
+          <List
+            items={posts}
+            renderItem={(item: IPost, ndx, className) => (
+              <Post
+                ndx={ndx}
+                key={item.id}
+                post={item}
+                className={className}
+                remove={removePost}
+                as="li"
+              />
+            )}
           />
-        )}
-      />
+          :
+          <h2 style={{ textAlign: 'center' }}>Список пуст</h2>
+      }
     </div>
   );
 }

@@ -8,11 +8,8 @@ interface IListProps<T> extends DetailedHTMLProps<ButtonHTMLAttributes<HTMLUList
 
 export function List<T>({ items, renderItem, ...props }: IListProps<T>): JSX.Element {
   return (
-    items.length ?
-      <ul className='list' {...props}>
-        {items.map((item, ndx) => renderItem(item, ndx + 1, 'list__item'))}
-      </ul>
-      :
-      <h2 style={{ textAlign: 'center' }}>Cписок пуст</h2>
+    <ul className='list' {...props}>
+      {items.map((item, ndx) => renderItem(item, ndx + 1, 'list__item'))}
+    </ul>
   );
 }
