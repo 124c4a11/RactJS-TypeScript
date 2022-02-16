@@ -2,7 +2,7 @@ import { DetailedHTMLProps, Dispatch, HTMLAttributes, SetStateAction } from "rea
 import { Select, Input } from "..";
 
 
-export type SortOptionType = 'title' | 'description'
+export type SortOptionType = 'title' | 'body'
 
 
 export interface IFilter {

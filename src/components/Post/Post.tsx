@@ -30,7 +30,7 @@ export function Post<T extends ElementType = 'div'>({
     <Component className={cn(className, 'post')} {...props}>
       <div>
         <h2 className="post__title">{`${ndx}. ${post.title}`}</h2>
-        <p>{post.description}</p>
+        <p>{post.body}</p>
       </div>
       <div>
         <Button onClick={() => remove(post.id)}>Delete</Button>

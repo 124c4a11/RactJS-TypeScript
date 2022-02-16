@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { PostService } from './API/post.service';
 
 import './App.css';
 import {
@@ -16,16 +17,25 @@ import { IPost } from './interfaces/post.interface';
 
 
 function App(): JSX.Element {
-  const [posts, setPosts] = useState<IPost[]>([
-    { id: 1, title: 'bbb', description: 'aaa', },
-    { id: 2, title: 'aaa', description: 'bbb', },
-  ]);
-
+  const [isPostsLoading, setIsPostLoading] = useState<boolean>(false);
+  const [posts, setPosts] = useState<IPost[]>([]);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-
   const [filter, setFilter] = useState<IFilter>({ sortOption: "", searchQuery: "" });
 
   const searchedAndSortedPosts = usePosts(posts, filter.sortOption, filter.searchQuery);
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  async function fetchPosts(): Promise<void> {
+    setIsPostLoading(true);
+
+    const posts = await PostService.getAll();
+
+    setPosts(posts);
+    setIsPostLoading(false);
+  }
 
   const createPost = (newPost: IPost): void => {
     setPosts([...posts, newPost]);
@@ -40,7 +50,7 @@ function App(): JSX.Element {
 
   return (
     <div className="App">
-      <h1 style={{ textAlign: 'center', marginTop: 0 }}>Post List</h1>
+      <h1 style={{ textAlign: "center", marginTop: 0 }}>Post List</h1>
 
       <Button
         onClick={() => setIsModalVisible(true)}
@@ -63,26 +73,29 @@ function App(): JSX.Element {
       <hr style={{ margin: '15px 0' }} />
 
       {
-        searchedAndSortedPosts.length ?
-          <List
-            items={searchedAndSortedPosts}
-            renderItem={(item: IPost, ndx, className) => (
-              <Post
-                ndx={ndx}
-                key={item.id}
-                post={item}
-                className={className}
-                remove={removePost}
-                as="li"
-              />
-            )}
-          />
+        isPostsLoading ?
+          <h2>Loading...</h2>
           :
-          <h2 style={{ textAlign: 'center' }}>Post List is empty</h2>
+          searchedAndSortedPosts.length ?
+            <List
+              items={searchedAndSortedPosts}
+              renderItem={(item: IPost, ndx, className) => (
+                <Post
+                  ndx={ndx}
+                  key={item.id}
+                  post={item}
+                  className={className}
+                  remove={removePost}
+                  as="li"
+                />
+              )}
+            />
+            :
+            <h2 style={{ textAlign: 'center' }}>Post List is empty</h2>
       }
 
 
-    </div>
+    </div >
   );
 }
 
