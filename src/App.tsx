@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import './App.css';
 import {
@@ -10,6 +10,7 @@ import {
   Modal,
   Button,
 } from './components';
+import { usePosts } from './hooks/usePosts';
 
 import { IPost } from './interfaces/post.interface';
 
@@ -24,20 +25,7 @@ function App(): JSX.Element {
 
   const [filter, setFilter] = useState<IFilter>({ sortOption: "", searchQuery: "" });
 
-  const sortedPosts = useMemo(() => {
-    console.log('getSortedPosts');
-    const sortOption = filter.sortOption
-
-    if (!sortOption) return posts;
-
-    return [...posts].sort((a, b) => a[sortOption].localeCompare(b[sortOption]));
-  }, [posts, filter.sortOption]);
-
-  const searchedAndSortedPosts = useMemo(() => {
-    if (!filter.searchQuery) return sortedPosts;
-
-    return sortedPosts.filter((item) => item.title.toLowerCase().includes(filter.searchQuery));
-  }, [sortedPosts, filter.searchQuery]);
+  const searchedAndSortedPosts = usePosts(posts, filter.sortOption, filter.searchQuery);
 
   const createPost = (newPost: IPost): void => {
     setPosts([...posts, newPost]);
