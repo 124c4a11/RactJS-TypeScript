@@ -11,31 +11,27 @@ import {
   Modal,
   Button,
 } from './components';
-import { usePosts } from './hooks/usePosts';
+import { useFetching, usePosts } from './hooks';
 
 import { IPost } from './interfaces/post.interface';
 
 
 function App(): JSX.Element {
-  const [isPostsLoading, setIsPostLoading] = useState<boolean>(false);
   const [posts, setPosts] = useState<IPost[]>([]);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [filter, setFilter] = useState<IFilter>({ sortOption: "", searchQuery: "" });
+
+  const [fetchPosts, isPostsLoading, postError] = useFetching(async () => {
+    const posts = await PostService.getAll();
+    setPosts(posts);
+  });
 
   const searchedAndSortedPosts = usePosts(posts, filter.sortOption, filter.searchQuery);
 
   useEffect(() => {
     fetchPosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  async function fetchPosts(): Promise<void> {
-    setIsPostLoading(true);
-
-    const posts = await PostService.getAll();
-
-    setPosts(posts);
-    setIsPostLoading(false);
-  }
 
   const createPost = (newPost: IPost): void => {
     setPosts([...posts, newPost]);
@@ -71,6 +67,11 @@ function App(): JSX.Element {
       />
 
       <hr style={{ margin: '15px 0' }} />
+
+      {
+        postError &&
+        <h2>{`Error: ${postError}`}</h2>
+      }
 
       {
         isPostsLoading ?
