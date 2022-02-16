@@ -7,6 +7,8 @@ import {
   Post,
   IFilter,
   PostFilter,
+  Modal,
+  Button,
 } from './components';
 
 import { IPost } from './interfaces/post.interface';
@@ -17,6 +19,8 @@ function App(): JSX.Element {
     { id: 1, title: 'bbb', description: 'aaa', },
     { id: 2, title: 'aaa', description: 'bbb', },
   ]);
+
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
   const [filter, setFilter] = useState<IFilter>({ sortOption: "", searchQuery: "" });
 
@@ -37,6 +41,7 @@ function App(): JSX.Element {
 
   const createPost = (newPost: IPost): void => {
     setPosts([...posts, newPost]);
+    setIsModalVisible(false);
   };
 
   const removePost = (id: number): void => {
@@ -48,7 +53,17 @@ function App(): JSX.Element {
   return (
     <div className="App">
       <h1 style={{ textAlign: 'center', marginTop: 0 }}>Post List</h1>
-      <PostForm create={createPost} />
+
+      <Button
+        onClick={() => setIsModalVisible(true)}
+      >Create Post</Button>
+
+      <Modal
+        visible={isModalVisible}
+        setIsVisible={setIsModalVisible}
+      >
+        <PostForm create={createPost} />
+      </Modal>
 
       <hr style={{ margin: '15px 0' }} />
 
@@ -77,6 +92,8 @@ function App(): JSX.Element {
           :
           <h2 style={{ textAlign: 'center' }}>Post List is empty</h2>
       }
+
+
     </div>
   );
 }
