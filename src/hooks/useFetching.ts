@@ -9,7 +9,7 @@ export function useFetching(callback: () => Promise<any>) {
     try {
       setIsLoading(true);
 
-      await callback()
+      await callback();
     } catch (err) {
       if (err instanceof Error) setError(err.message);
     } finally {

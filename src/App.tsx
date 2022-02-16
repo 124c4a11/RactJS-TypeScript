@@ -10,20 +10,30 @@ import {
   PostFilter,
   Modal,
   Button,
+  Pagination,
 } from './components';
-import { useFetching, usePosts } from './hooks';
+import { useFetching, usePagination, usePosts } from './hooks';
 
 import { IPost } from './interfaces/post.interface';
+import { getPageCount } from './utils/pages';
 
 
 function App(): JSX.Element {
   const [posts, setPosts] = useState<IPost[]>([]);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [filter, setFilter] = useState<IFilter>({ sortOption: "", searchQuery: "" });
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [limit, setLimit] = useState<number>(10);
+  const [page, setPage] = useState<number>(1);
 
   const [fetchPosts, isPostsLoading, postError] = useFetching(async () => {
-    const posts = await PostService.getAll();
-    setPosts(posts);
+    const { data, headers } = await PostService.getAll(limit, page);
+
+    setPosts(data);
+
+    const totalCount = Number(headers['x-total-count']);
+
+    setTotalPages(getPageCount(totalCount, limit));
   });
 
   const searchedAndSortedPosts = usePosts(posts, filter.sortOption, filter.searchQuery);
@@ -31,7 +41,9 @@ function App(): JSX.Element {
   useEffect(() => {
     fetchPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [posts]);
+
+  const pagesArr = usePagination(totalPages);
 
   const createPost = (newPost: IPost): void => {
     setPosts([...posts, newPost]);
@@ -43,6 +55,10 @@ function App(): JSX.Element {
 
     setPosts(filteredPosts);
   };
+
+  const changePage = (pageNumber: number): void => {
+    setPage(pageNumber);
+  }
 
   return (
     <div className="App">
@@ -82,7 +98,7 @@ function App(): JSX.Element {
               items={searchedAndSortedPosts}
               renderItem={(item: IPost, ndx, className) => (
                 <Post
-                  ndx={ndx}
+                  ndx={item.id}
                   key={item.id}
                   post={item}
                   className={className}
@@ -92,10 +108,17 @@ function App(): JSX.Element {
               )}
             />
             :
-            <h2 style={{ textAlign: 'center' }}>Post List is empty</h2>
+            <h2 style={{ textAlign: "center" }}>Post List is empty</h2>
       }
 
-
+      {
+        pagesArr.length &&
+        <Pagination
+          currentPage={page}
+          pages={pagesArr}
+          changePage={changePage}
+        />
+      }
     </div >
   );
 }

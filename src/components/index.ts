@@ -6,3 +6,4 @@ export * from './PostForm/PostForm';
 export * from './Select/Select';
 export * from './PostFilter/PostFilter';
 export * from './Modal/Modal';
+export * from './Pagination/Pagination';
