@@ -1,17 +1,15 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import './App.css';
 import {
   PostForm,
-  Select,
   List,
-  Post
+  Post,
+  IFilter,
+  PostFilter,
 } from './components';
 
 import { IPost } from './interfaces/post.interface';
-
-
-type SortOptionType = 'title' | 'description'
 
 
 function App(): JSX.Element {
@@ -20,7 +18,22 @@ function App(): JSX.Element {
     { id: 2, title: 'aaa', description: 'bbb', },
   ]);
 
-  const [sortOption, setSortOption] = useState<SortOptionType | ''>('');
+  const [filter, setFilter] = useState<IFilter>({ sortOption: "", searchQuery: "" });
+
+  const sortedPosts = useMemo(() => {
+    console.log('getSortedPosts');
+    const sortOption = filter.sortOption
+
+    if (!sortOption) return posts;
+
+    return [...posts].sort((a, b) => a[sortOption].localeCompare(b[sortOption]));
+  }, [posts, filter.sortOption]);
+
+  const searchedAndSortedPosts = useMemo(() => {
+    if (!filter.searchQuery) return sortedPosts;
+
+    return sortedPosts.filter((item) => item.title.toLowerCase().includes(filter.searchQuery));
+  }, [sortedPosts, filter.searchQuery]);
 
   const createPost = (newPost: IPost): void => {
     setPosts([...posts, newPost]);
@@ -32,12 +45,6 @@ function App(): JSX.Element {
     setPosts(filteredPosts);
   };
 
-  const sortPosts = (sortOption: SortOptionType): void => {
-    setSortOption(sortOption);
-
-    setPosts([...posts].sort((a, b) => a[sortOption].localeCompare(b[sortOption])));
-  }
-
   return (
     <div className="App">
       <h1 style={{ textAlign: 'center', marginTop: 0 }}>Post List</h1>
@@ -45,22 +52,17 @@ function App(): JSX.Element {
 
       <hr style={{ margin: '15px 0' }} />
 
-      <Select<SortOptionType>
-        value={sortOption}
-        defaultOption="Sort"
-        options={[
-          { value: 'title', body: "By title" },
-          { value: 'description', body: 'By description' }
-        ]}
-        onChangeOption={sortPosts}
+      <PostFilter
+        filter={filter}
+        setFilter={setFilter}
       />
 
       <hr style={{ margin: '15px 0' }} />
 
       {
-        posts.length ?
+        searchedAndSortedPosts.length ?
           <List
-            items={posts}
+            items={searchedAndSortedPosts}
             renderItem={(item: IPost, ndx, className) => (
               <Post
                 ndx={ndx}
