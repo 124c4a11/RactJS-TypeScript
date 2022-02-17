@@ -10,4 +10,8 @@ export class PostService {
       }
     });
   }
+
+  static async getById(id: string) {
+    return await axios.get(`https://jsonplaceholder.typicode.com/posts/${id}`);
+  }
 }
