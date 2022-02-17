@@ -1,15 +1,15 @@
 import { useState } from "react";
 
 
-export function useFetching(callback: () => Promise<any>) {
+export function useFetching(callback: (...args: any[]) => Promise<any>) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
-  async function fetching(): Promise<void> {
+  async function fetching(...args: any[]): Promise<void> {
     try {
       setIsLoading(true);
 
-      await callback();
+      await callback(...args);
     } catch (err) {
       if (err instanceof Error) setError(err.message);
     } finally {
@@ -17,5 +17,5 @@ export function useFetching(callback: () => Promise<any>) {
     }
   }
 
-  return [fetching, isLoading, error] as [() => Promise<void>, boolean, string];
+  return [fetching, isLoading, error] as [(...args: any[]) => Promise<void>, boolean, string];
 }

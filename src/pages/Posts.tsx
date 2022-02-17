@@ -25,7 +25,7 @@ export function Posts(): JSX.Element {
   const [limit] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
 
-  const [fetchPosts, isPostsLoading, postError] = useFetching(async () => {
+  const [fetchPosts, isPostsLoading, postError] = useFetching(async (limit, page) => {
     const { data, headers } = await PostService.getAll(limit, page);
 
     setPosts(data);
@@ -38,9 +38,9 @@ export function Posts(): JSX.Element {
   const searchedAndSortedPosts = usePosts(posts, filter.sortOption, filter.searchQuery);
 
   useEffect(() => {
-    fetchPosts();
+    fetchPosts(limit, page);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [posts]);
+  }, []);
 
   const pagesArr = usePagination(totalPages);
 
@@ -57,6 +57,7 @@ export function Posts(): JSX.Element {
 
   const changePage = (pageNumber: number): void => {
     setPage(pageNumber);
+    fetchPosts(limit, pageNumber)
   }
 
   return (
