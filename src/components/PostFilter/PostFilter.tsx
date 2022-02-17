@@ -29,7 +29,7 @@ export function PostFilter({
         defaultOption="Sort"
         options={[
           { value: 'title', body: 'By title' },
-          { value: 'description', body: 'By description' }
+          { value: 'body', body: 'By description' }
         ]}
         onChangeOption={(sortOption) => setFilter({ ...filter, sortOption })}
       />
