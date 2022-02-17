@@ -1,14 +1,14 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 
-import { About, Posts, SinglePost } from '../../pages';
+import { routes } from '../../router';
 
 
 export function AppRouter(): JSX.Element {
   return (
     <Routes>
-      <Route path="/posts" element={<Posts />} />
-      <Route path="/posts/:id" element={<SinglePost />} />
-      <Route path="/about" element={<About />} />
+      {routes.map(({ path, Component }) => (
+        <Route key={path} path={path} element={<Component />} />
+      ))}
       <Route path="*" element={<Navigate to="/posts" />} />
     </Routes>
   );
