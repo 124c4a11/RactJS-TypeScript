@@ -1,4 +1,4 @@
-import { About, Posts, SinglePost } from "../pages";
+import { About, Login, Posts, SinglePost } from "../pages";
 
 
 interface IRoute {
@@ -7,7 +7,12 @@ interface IRoute {
 }
 
 
-export const routes: IRoute[] = [
+export const publicRoutes: IRoute[] = [
+  { path: '/login', Component: Login },
+];
+
+
+export const privateRoutes: IRoute[] = [
   { path: '/posts', Component: Posts },
   { path: '/posts/:id', Component: SinglePost },
   { path: '/about', Component: About },

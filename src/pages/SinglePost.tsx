@@ -9,11 +9,11 @@ import { CommentList } from "../components";
 
 export function SinglePost(): JSX.Element {
   const { id } = useParams();
-  const [post, setPost] = useState<IPost>();
+  const [post, setPost] = useState<IPost | null>(null);
   const [comments, setComments] = useState<IComment[]>([]);
 
   const [fetchPostById, isLoading] = useFetching(async (id) => {
-    const { data } = await PostService.getById(id as string);
+    const { data } = await PostService.getById(id);
 
     setPost(data);
   });
