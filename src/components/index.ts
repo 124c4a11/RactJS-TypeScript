@@ -9,3 +9,4 @@ export * from './Modal/Modal';
 export * from './Pagination/Pagination';
 export * from './Navbar/Navbar';
 export * from './AppRouter/AppRouter';
+export * from './CommentList/CommentList';
