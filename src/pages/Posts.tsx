@@ -10,6 +10,7 @@ import {
   Modal,
   Button,
   Pagination,
+  Select,
 } from '../components';
 import { useFetching, usePagination, usePosts } from '../hooks';
 import { useObserver } from '../hooks/useObserver';
@@ -23,7 +24,7 @@ export function Posts(): JSX.Element {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [filter, setFilter] = useState<IFilter>({ sortOption: "", searchQuery: "" });
   const [totalPages, setTotalPages] = useState<number>(0);
-  const [limit] = useState<number>(10);
+  const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
 
   const lastElement = useRef<HTMLDivElement>(null);
@@ -86,6 +87,20 @@ export function Posts(): JSX.Element {
       <PostFilter
         filter={filter}
         setFilter={setFilter}
+      />
+
+      <hr style={{ margin: '15px 0' }} />
+
+      <Select
+        value={limit.toString()}
+        defaultOption="Number of items per page"
+        options={[
+          { value: '5', body: '5' },
+          { value: '10', body: '10' },
+          { value: '25', body: '25' },
+          { value: '-1', body: 'all' },
+        ]}
+        onChangeOption={(sortOption) => setLimit(Number(sortOption))}
       />
 
       <hr style={{ margin: '15px 0' }} />
