@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PostService } from '../API/post.service';
 
 import {
@@ -12,6 +12,7 @@ import {
   Pagination,
 } from '../components';
 import { useFetching, usePagination, usePosts } from '../hooks';
+import { useObserver } from '../hooks/useObserver';
 
 import { IPost } from '../interfaces/post.interface';
 import { getPageCount } from '../utils/pages';
@@ -25,10 +26,12 @@ export function Posts(): JSX.Element {
   const [limit] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
 
+  const lastElement = useRef<HTMLDivElement>(null);
+
   const [fetchPosts, isPostsLoading, postError] = useFetching(async (limit, page) => {
     const { data, headers } = await PostService.getAll(limit, page);
 
-    setPosts(data);
+    setPosts([...posts, ...data]);
 
     const totalCount = Number(headers['x-total-count']);
 
@@ -37,10 +40,14 @@ export function Posts(): JSX.Element {
 
   const searchedAndSortedPosts = usePosts(posts, filter.sortOption, filter.searchQuery);
 
+  useObserver(lastElement, page < totalPages, isPostsLoading, () => {
+    setPage(page + 1);
+  });
+
   useEffect(() => {
     fetchPosts(limit, page);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [page, limit]);
 
   const pagesArr = usePagination(totalPages);
 
@@ -57,7 +64,6 @@ export function Posts(): JSX.Element {
 
   const changePage = (pageNumber: number): void => {
     setPage(pageNumber);
-    fetchPosts(limit, pageNumber)
   }
 
   return (
@@ -90,25 +96,28 @@ export function Posts(): JSX.Element {
       }
 
       {
-        isPostsLoading ?
-          <h2>Loading...</h2>
+        isPostsLoading &&
+        <h2>Loading...</h2>
+      }
+
+      {
+        searchedAndSortedPosts.length
+          ?
+          <List
+            items={searchedAndSortedPosts}
+            renderItem={(item: IPost, ndx, className) => (
+              <Post
+                ndx={item.id}
+                key={item.id}
+                post={item}
+                className={className}
+                remove={removePost}
+                as="li"
+              />
+            )}
+          />
           :
-          searchedAndSortedPosts.length ?
-            <List
-              items={searchedAndSortedPosts}
-              renderItem={(item: IPost, ndx, className) => (
-                <Post
-                  ndx={item.id}
-                  key={item.id}
-                  post={item}
-                  className={className}
-                  remove={removePost}
-                  as="li"
-                />
-              )}
-            />
-            :
-            <h2 style={{ textAlign: "center" }}>Post List is empty</h2>
+          <h2 style={{ textAlign: "center" }}>Post List is empty</h2>
       }
 
       {
@@ -119,6 +128,8 @@ export function Posts(): JSX.Element {
           changePage={changePage}
         />
       }
+
+      <div ref={lastElement} style={{ height: "20px", backgroundColor: "red" }}></div>
     </ >
   );
 }
