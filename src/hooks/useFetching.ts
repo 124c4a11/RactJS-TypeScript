@@ -1,7 +1,12 @@
 import { useState } from "react";
 
 
-export function useFetching(callback: (...args: any[]) => Promise<any>) {
+type CallbackType = (...args: any[]) => Promise<void>;
+
+type UseFetchingType = [CallbackType, boolean, string];
+
+
+export function useFetching(callback: CallbackType): UseFetchingType {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
@@ -17,5 +22,5 @@ export function useFetching(callback: (...args: any[]) => Promise<any>) {
     }
   }
 
-  return [fetching, isLoading, error] as [(...args: any[]) => Promise<void>, boolean, string];
+  return [fetching, isLoading, error];
 }
